@@ -12,13 +12,26 @@
   range.addEventListener('input', updateSplit);
   updateSplit();
 
+  // Retain decoded images and share pending requests between preloading and clicks.
+  const imageCache = new Map();
   function loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
+    if (imageCache.has(src)) return imageCache.get(src);
+    const image = new Image();
+    image.decoding = 'async';
+    image.fetchPriority = 'low';
+    const ready = new Promise((resolve, reject) => {
+      image.onload = resolve;
       image.onerror = () => reject(new Error(`Could not load ${src}`));
-      image.src = src;
+    }).then(async () => {
+      if (typeof image.decode === 'function') await image.decode();
+      return image;
+    }).catch(error => {
+      imageCache.delete(src); // Allow a failed background request to retry on selection.
+      throw error;
     });
+    imageCache.set(src, ready);
+    image.src = src;
+    return ready;
   }
   let taskRequest = 0;
   $$('.task-list button').forEach(button => button.addEventListener('click', async () => {
@@ -69,17 +82,20 @@
     $$('[data-control]').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
     updateControl();
   }));
-  // Preload only the small, genuine figure samples when the control approaches the viewport.
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => {
-      if (!entries.some(e => e.isIntersecting)) return;
-      ['lowlight', 'dehazing'].forEach(task => scaleFiles.forEach(scale => {
-        const image = new Image(); image.src = `assets/control-${task}-${scale}.webp`;
-      }));
-      observer.disconnect();
-    }, { rootMargin: '300px' });
-    observer.observe($('#control'));
-  }
+  // Let the initially visible pair load first, then warm every interactive image.
+  // Background failures are retried by loadImage when that example is selected.
+  Promise.all([
+    loadImage($('#input-image').getAttribute('src')),
+    loadImage($('#output-image').getAttribute('src'))
+  ]).catch(() => {}).then(() => {
+    const sources = Object.keys(content.tasks).flatMap(task => [
+      `assets/${task}-input.webp`, `assets/${task}-output.webp`
+    ]);
+    ['lowlight', 'dehazing'].forEach(task => {
+      ['input', ...scaleFiles].forEach(scale => sources.push(`assets/control-${task}-${scale}.webp`));
+    });
+    sources.forEach(src => { loadImage(src).catch(() => {}); });
+  });
 
   const metricNames = { psnr: 'PSNR ↑', ssim: 'SSIM ↑', lpips: 'LPIPS ↓' };
   function updateTable(metric) {
