@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f3">
+  <meta name="description" content="ImIR turns a pretrained image editor into an all-in-one restorer with an instruction derived from the image itself. Accepted to ACCV 2026. Codeway AI Research.">
+  <meta property="og:title" content="ImIR — Image-Instruction Tuning for All-in-One Image Restoration">
+  <meta property="og:description" content="One adapter. Six tasks. No prompt. Accepted to ACCV 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/social-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>ImIR · Image-Instruction Tuning · ACCV 2026</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" href="assets/deraining-output.webp" as="image">
+  <script src="content.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="#" aria-label="ImIR home">Im<span>IR</span><span class="brand-dot" aria-hidden="true"></span></a>
+  <span class="lab-name">Codeway AI Research</span>
+  <nav aria-label="Main navigation"><a href="#explore">Examples</a><a href="#method">Method</a><a href="#results">Results</a><a href="#citation">Citation <span aria-hidden="true">↗</span></a></nav>
+</header>
+<main id="main">
+  <section class="hero container" aria-labelledby="title">
+    <div class="conference"><span aria-hidden="true"></span> Accepted to ACCV 2026</div>
+    <h1 id="title"><span class="title-name">ImIR</span><span class="title-full">Image-Instruction Tuning for<br class="desktop-break"> All-in-One Image Restoration</span></h1>
+    <div class="authors" aria-label="Authors">
+      <span>Süleyman Aslan</span><span>Görkay Aydemir</span><span>Mısra Yavuz</span><span>Yunus Bilge Kurt</span><span>Nasrin Rahimi</span><span>Ahmet Rasim Emirdağı</span><span>Burak Can Biner</span><span>M. Akın Yılmaz</span>
+    </div>
+    <p class="affiliation">Codeway AI Research</p>
+    <div class="resources" id="resources" aria-label="Publication resources">
+      <span class="resource unavailable">arXiv <small>Coming soon</small></span><span class="resource unavailable">Source code <small>Coming soon</small></span><span class="resource unavailable">Open weights <small>Coming soon</small></span><span class="resource unavailable">Proceedings <small>Coming soon</small></span>
+    </div>
+  </section>
+
+  <section class="explorer container" id="explore" aria-labelledby="explore-title">
+        <div class="task-list" role="group" aria-label="Choose a restoration example">
+          <button data-task="deraining" aria-pressed="true">Deraining</button>
+          <button data-task="lowlight" aria-pressed="false">Low-light enhancement</button>
+          <button data-task="dehazing" aria-pressed="false">Dehazing</button>
+          <button data-task="deblurring" aria-pressed="false">Deblurring</button>
+          <button data-task="denoising" aria-pressed="false">Denoising</button>
+          <button data-task="decompression" aria-pressed="false">JPEG artifact removal</button>
+        </div>
+    <figure class="comparison-figure">
+        <div class="comparison" id="comparison" style="--split:50%" aria-busy="false">
+          <img id="output-image" src="assets/deraining-output.webp" width="480" height="320" alt="ImIR output: rain removed from a moonlit forest" fetchpriority="high" draggable="false">
+          <img id="input-image" class="before-image" src="assets/deraining-input.webp" width="480" height="320" alt="Degraded input: rain streaks over a moonlit forest" draggable="false">
+          <span class="image-label before-label" aria-hidden="true">Input</span><span class="image-label after-label" aria-hidden="true">ImIR</span>
+          <div class="split-line" aria-hidden="true"><span>‹ &nbsp; ›</span></div>
+          <input id="comparison-range" class="comparison-range" type="range" min="0" max="100" value="50" aria-label="Before and after comparison: percentage of input visible" aria-valuetext="50% input, 50% ImIR output">
+        </div>
+      <figcaption class="comparison-caption"><strong id="explore-title">One adapter, six tasks, no prompt.</strong> The output of the task-agnostic ImIR is produced from the input image alone with no text prompt and no degradation label.</figcaption>
+    </figure>
+    <p class="sr-only" id="example-status" role="status" aria-live="polite"></p>
+    <noscript><p>Enable JavaScript to select examples and use the comparison controls.</p></noscript>
+  </section>
+
+  <section class="abstract-section container" aria-labelledby="abstract-title"><h2 id="abstract-title">Abstract</h2><p>Degradations vary widely across images, so a practical restoration system has to handle many degradation types with one model. A recent and effective recipe adapts a large pretrained image-editing model to restoration using a small low-rank adapter with a text prompt. We replace that prompt with an instruction derived from the degraded image itself. The image reaches the editor through two paths: its structure comes from the model’s VAE, and its semantic instruction comes from a lightweight token mapper that shifts the degraded image’s vision-language embedding toward the embedding a clean image would produce. Because the instruction is a continuous vector, scaling it yields a family of valid restorations for tasks whose target is not unique, such as low-light enhancement. We adapt one Qwen-Image-Edit model to six tasks with a single adapter trained in about three hours on one GPU. The image instruction outperforms text conditioning under a matched comparison, and it supports task agnostic restoration without a degradation label, which the text variant does not.</p></section>
+
+  <section class="method-section section-band" id="method" aria-labelledby="method-title">
+    <div class="container">
+      <div class="section-heading"><h2 id="method-title">Method</h2><p>The degraded image reaches the editor through two channels. Its VAE encoding supplies spatial structure, while a token mapper predicts a clean-image instruction from its vision-language embedding. We keep the backbone frozen and train one shared low-rank adapter.</p></div>
+      <figure class="method-figure"><a href="assets/method.webp" target="_blank" rel="noopener" aria-label="Open the full method figure"><img src="assets/method.webp" width="2200" height="969" loading="lazy" alt="ImIR framework: the degraded image enters Qwen2.5-VL and a trainable token mapper for instruction, and a VAE encoder for structure. Both condition the frozen diffusion transformer with a trainable LoRA adapter. The mapper uses a residual token MLP with FiLM and global image context."></a><figcaption><strong>ImIR framework.</strong> Qwen2.5-VL encodes the degraded image; the token mapper predicts the clean-image instruction that conditions the LoRA-adapted diffusion transformer. The mapper learns a residual correction from an identity initialization.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="control-section container" id="control" aria-labelledby="control-title">
+    <div class="section-heading"><h2 id="control-title">Instruction scaling</h2><p>We scale the mapper’s residual shift to move along the degraded-to-clean direction. For tasks whose target is not unique, such as low-light enhancement, varying the scale produces a family of valid restorations.</p></div>
+    <div class="control-layout">
+      <div class="control-copy">
+        <div class="segmented" role="group" aria-label="Instruction-scale example"><button data-control="lowlight" aria-pressed="true">Low-light</button><button data-control="dehazing" aria-pressed="false">Dehazing</button></div>
+        <p class="formula" aria-label="Predicted clean embedding equals degraded embedding plus scale times the mapper residual">ê<sub>x</sub> = e<sub>y</sub> + <span>s</span> · g<sub>θ</sub>(e<sub>y</sub>; γ, β)</p>
+        <p id="control-description">Increasing the scale brightens the low-light image through a range of plausible exposures. Scaling beyond the default begins to over-brighten the output.</p>
+        <div class="scale-readout"><label for="scale-range">Instruction scale</label><output id="scale-value" for="scale-range">s = 1</output></div>
+        <input id="scale-range" class="scale-range" type="range" min="0" max="5" step="1" value="4" aria-valuetext="Instruction scale 1">
+        <div class="scale-ticks" aria-hidden="true"><span>0</span><span>0.25</span><span>0.5</span><span>0.75</span><span>1</span><span>1.5</span></div>
+      </div>
+      <div class="control-images"><figure><img id="control-input" src="assets/control-lowlight-input.webp" width="370" height="529" loading="lazy" alt="Original low-light vegetation scene"><figcaption>Degraded input</figcaption></figure><figure class="control-result"><img id="control-output" src="assets/control-lowlight-1.webp" width="370" height="529" loading="lazy" alt="Low-light restoration at instruction scale 1"><figcaption>ImIR <span id="control-caption">s = 1</span></figcaption></figure></div>
+    </div>
+  </section>
+
+  <section class="results-section section-band" id="results" aria-labelledby="results-title">
+    <div class="container">
+      <div class="section-heading"><h2 id="results-title">Quantitative results</h2><p>We compare image and text conditioning on the same backbone. The image instruction improves PSNR on all six tasks. The task-agnostic variant performs on par with the task-aware model without a degradation label.</p></div>
+      <div class="table-toolbar"><h3>Image instruction versus text</h3><div class="segmented" role="group" aria-label="Result metric"><button data-metric="psnr" aria-pressed="true">PSNR ↑</button><button data-metric="ssim" aria-pressed="false">SSIM ↑</button><button data-metric="lpips" aria-pressed="false">LPIPS ↓</button></div></div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Comparison results; scroll horizontally on small screens"><table id="comparison-table" aria-label="Image instruction versus text: PSNR ↑"><thead><tr><th scope="col">Task</th><th scope="col">Text LoRA<span>Task-aware</span></th><th scope="col">Text LoRA<span>Task-agnostic</span></th><th scope="col">Text LoRA<span>VLM prompt</span></th><th scope="col">ImIR<span>Task-agnostic</span></th><th scope="col" class="highlight-col">ImIR<span>Task-aware</span></th><th scope="col">Gain over Text LoRA<span>Task-aware comparison</span></th></tr></thead><tbody id="results-body">
+        <tr><th scope="row">Low-light</th><td>16.3</td><td>15.6</td><td>16.5</td><td>21.2</td><td class="highlight-col">21.3</td><td class="gain">+5.0 dB</td></tr>
+        <tr><th scope="row">Deraining</th><td>32.5</td><td>17.5</td><td>17.2</td><td>33.0</td><td class="highlight-col">33.2</td><td class="gain">+0.7 dB</td></tr>
+        <tr><th scope="row">Dehazing</th><td>21.0</td><td>17.2</td><td>17.8</td><td>24.4</td><td class="highlight-col">24.7</td><td class="gain">+3.7 dB</td></tr>
+        <tr><th scope="row">Deblurring</th><td>26.8</td><td>17.8</td><td>17.2</td><td>27.6</td><td class="highlight-col">27.6</td><td class="gain">+0.8 dB</td></tr>
+        <tr><th scope="row">Denoising</th><td>34.4</td><td>19.0</td><td>18.6</td><td>35.6</td><td class="highlight-col">35.7</td><td class="gain">+1.3 dB</td></tr>
+        <tr><th scope="row">JPEG</th><td>27.4</td><td>17.0</td><td>16.6</td><td>27.9</td><td class="highlight-col">28.1</td><td class="gain">+0.7 dB</td></tr>
+      </tbody></table></div>
+      <p class="table-note">All variants use the same backbone and training data. Task-agnostic Text LoRA uses one neutral prompt; the VLM-prompt variant uses a per-image instruction generated by Qwen2.5-VL. Task-agnostic ImIR receives only the input image.</p>
+      <p class="sr-only" id="metric-status" role="status"></p>
+      <section class="qualitative-section" aria-labelledby="qualitative-title"><h3 id="qualitative-title">Qualitative comparison</h3><figure><img src="assets/qualitative.webp" width="1171" height="824" loading="lazy" alt="Qualitative comparison of six tasks in columns and, in rows, degraded input, zero-shot editor, text adapter, RealRestorer, ImIR, and ground truth."><figcaption><strong>Qualitative comparison.</strong> One example per task. Rows: degraded input, zero-shot editor, text adapter, RealRestorer, ImIR, and ground truth.</figcaption></figure></section>
+    </div>
+  </section>
+
+
+
+  <section class="citation-section container" id="citation" aria-labelledby="citation-title"><h2 id="citation-title">Citation</h2><div class="citation-box"><div class="citation-top"><span>BibTeX</span><span class="todo-label" id="citation-state">TODO</span><button id="copy-citation" hidden>Copy citation</button></div><pre id="bibtex">% TODO: Add the official BibTeX citation
+% after publication details are available.</pre><p id="copy-status" class="sr-only" role="status"></p></div></section>
+</main>
+<footer class="site-footer container"><a class="wordmark" href="#">Im<span>IR</span><span class="brand-dot" aria-hidden="true"></span></a><span>Codeway AI Research · ACCV 2026</span><a href="#main">Back to top ↑</a></footer>
+</body>
+</html>
