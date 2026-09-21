@@ -1,0 +1,16 @@
+ImIR uses Hugging Face Diffusers, Transformers, PEFT, Accelerate, Safetensors,
+and the Qwen-Image-Edit-2511 backbone. Their respective licenses and notices apply.
+
+The sampling orchestration in src/imir/pipeline.py follows the Qwen-Image-Edit
+Plus pipeline's latent normalization and flow sampling conventions:
+https://github.com/huggingface/diffusers/blob/v0.37.0/src/diffusers/pipelines/qwenimage/pipeline_qwenimage_edit_plus.py
+Copyright 2025 Qwen-Image Team and The HuggingFace Team. All rights reserved.
+Licensed under the Apache License, Version 2.0:
+https://www.apache.org/licenses/LICENSE-2.0
+A copy is included in third_party/APACHE-2.0.txt.
+
+Backbone weights are downloaded separately.
+
+examples/deraining.png is a Rain100L test sample. See examples/README.md for
+its source and attribution. assets/teaser.png is the ImIR teaser figure.
+Rights to example and benchmark images remain with their respective owners.
