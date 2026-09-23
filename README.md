@@ -9,7 +9,11 @@ Nasrin Rahimi · Ahmet Rasim Emirdağı · Burak Can Biner · M. Akın Yılmaz
 
 **Codeway AI Research**
 
-Project page: TODO · arXiv: TODO · Model weights: TODO · Proceedings: TODO
+[![Project page](https://img.shields.io/badge/Project-page-365f43?style=flat)](https://suleymanaslan.github.io/imir/)
+[![arXiv: 2609.25267](https://img.shields.io/badge/arXiv-2609.25267-b31b1b?style=flat&logo=arxiv)](https://arxiv.org/abs/2609.25267)
+[![Source code: GitHub](https://img.shields.io/badge/Source_code-GitHub-24292f?style=flat&logo=github)](https://github.com/suleymanaslan/imir)
+[![Open weights: Hugging Face](https://img.shields.io/badge/Open_weights-Hugging_Face-785200?style=flat&logo=huggingface)](https://huggingface.co/suleymanaslan/imir)
+![Proceedings: Coming soon](https://img.shields.io/badge/Proceedings-Coming_soon-62685b?style=flat)
 
 </div>
 
@@ -21,8 +25,14 @@ repository provides the command-line interface and Python API for ImIR inference
 
 ## Installation
 
-Use Python 3.10 or newer and a CUDA-capable NVIDIA GPU. Run the following commands
-from the repository root:
+Use Python 3.10 or newer and a CUDA-capable NVIDIA GPU. Clone the repository:
+
+```bash
+git clone https://github.com/suleymanaslan/imir.git
+cd imir
+```
+
+Run the following commands from the repository root:
 
 ```bash
 python -m venv .venv
@@ -44,8 +54,11 @@ GPU memory is limited. CPU offloading requires CUDA and sufficient system RAM.
 
 ## Checkpoint
 
-Pass a local checkpoint directory or a Hugging Face model repository ID to
-`--checkpoint`. A local checkpoint has the following files:
+The released task-agnostic model is available at
+[suleymanaslan/imir](https://huggingface.co/suleymanaslan/imir). Pass
+`--checkpoint suleymanaslan/imir` to download and cache it automatically.
+
+You can also pass a local checkpoint directory containing the following files:
 
 ```text
 checkpoints/imir/
@@ -66,7 +79,7 @@ specified in `imir_config.json` and reused from the Hugging Face cache.
 Restore the included [Rain100L sample](examples/deraining.png):
 
 ```bash
-imir --checkpoint ./checkpoints/imir \
+imir --checkpoint suleymanaslan/imir \
   --input examples/deraining.png \
   --output outputs/deraining.png \
   --cpu-offload \
@@ -84,7 +97,7 @@ Sample attribution is provided in [examples/README.md](examples/README.md).
 ### Restore a folder
 
 ```bash
-imir --checkpoint ./checkpoints/imir \
+imir --checkpoint suleymanaslan/imir \
   --input ./images \
   --output ./outputs \
   --recursive \
@@ -99,7 +112,7 @@ Add `--overwrite` to replace existing outputs.
 ### Adjust the instruction scale
 
 ```bash
-imir --checkpoint ./checkpoints/imir \
+imir --checkpoint suleymanaslan/imir \
   --input examples/deraining.png \
   --output outputs/deraining-scale.png \
   --scale 1.5 \
@@ -120,7 +133,7 @@ from pathlib import Path
 from imir import ImIRPipeline
 
 pipe = ImIRPipeline.from_pretrained(
-    "./checkpoints/imir",
+    "suleymanaslan/imir",
     cpu_offload=True,
 )
 result = pipe("examples/deraining.png", seed=0)
@@ -181,6 +194,13 @@ See [NOTICE](NOTICE) for dependency and image attribution.
 ## Citation
 
 ```bibtex
-% TODO: Add the official BibTeX citation
-% after publication details are available.
+@article{aslan2026imirimageinstructiontuningallinone,
+  title={{ImIR}: Image-Instruction Tuning for All-in-One Image Restoration},
+  author={Süleyman Aslan and Görkay Aydemir and Mısra Yavuz and Yunus Bilge Kurt
+          and Nasrin Rahimi and Ahmet Rasim Emirdağı and Burak Can Biner
+          and M. Akın Yılmaz},
+  journal={arXiv preprint arXiv:2609.25267},
+  year={2026},
+  url={https://arxiv.org/abs/2609.25267}
+}
 ```
