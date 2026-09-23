@@ -1,13 +1,40 @@
-/* Release placeholders: replace null with the final public HTTPS URL.
-   Only experiments and assets from the camera-ready paper belong on this page. */
+/* Publication resources. Only experiments and assets from the camera-ready paper belong on this page. */
 window.IMIR_CONTENT = {
   links: [
-    { label: 'arXiv', url: null },
-    { label: 'Source code', url: null },
-    { label: 'Open weights', url: null },
-    { label: 'Proceedings', url: null }
+    {
+      "label": "arXiv",
+      "badge": "2609.25267",
+      "kind": "arxiv",
+      "url": "https://arxiv.org/abs/2609.25267"
+    },
+    {
+      "label": "Source code",
+      "badge": "GitHub",
+      "kind": "code",
+      "url": "https://github.com/suleymanaslan/imir"
+    },
+    {
+      "label": "Open weights",
+      "badge": "Hugging Face",
+      "kind": "weights",
+      "url": "https://huggingface.co/suleymanaslan/imir"
+    },
+    {
+      "label": "Proceedings",
+      "badge": "Coming soon",
+      "kind": "proceedings",
+      "url": null
+    }
   ],
-  bibtex: null, // TODO: insert the official BibTeX citation when available.
+  bibtex: `@article{aslan2026imirimageinstructiontuningallinone,
+  title={{ImIR}: Image-Instruction Tuning for All-in-One Image Restoration},
+  author={Süleyman Aslan and Görkay Aydemir and Mısra Yavuz and Yunus Bilge Kurt
+          and Nasrin Rahimi and Ahmet Rasim Emirdağı and Burak Can Biner
+          and M. Akın Yılmaz},
+  journal={arXiv preprint arXiv:2609.25267},
+  year={2026},
+  url={https://arxiv.org/abs/2609.25267}
+}`,
   tasks: {
     deraining: { label: 'Deraining', scene: 'a moonlit forest', degradation: 'rain streaks' },
     lowlight: { label: 'Low-light enhancement', scene: 'an indoor sports hall', degradation: 'low light' },

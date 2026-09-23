@@ -131,14 +131,18 @@
     const active = typeof item.url === 'string' && /^https:\/\//.test(item.url);
     const link = document.createElement(active ? 'a' : 'span');
     link.className = `resource${active ? '' : ' unavailable'}`;
-    link.textContent = item.label;
+    link.dataset.kind = item.kind;
+    link.setAttribute('aria-label', `${item.label}: ${item.badge}`);
+    const label = document.createElement('span');
+    label.className = 'resource-label'; label.textContent = item.label;
+    const badge = document.createElement('span');
+    badge.className = 'resource-value'; badge.textContent = item.badge;
+    link.append(label, badge);
     if (active) { link.href = item.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; }
-    else { const note = document.createElement('small'); note.textContent = 'Coming soon'; link.append(note); }
     resources.append(link);
   });
   if (content.bibtex) {
     $('#bibtex').textContent = content.bibtex;
-    $('#citation-state').hidden = true;
     $('#copy-citation').hidden = false;
     $('#copy-citation').addEventListener('click', async () => {
       try {
